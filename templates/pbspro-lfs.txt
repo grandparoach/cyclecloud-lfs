@@ -18,6 +18,7 @@ Autoscale = $Autoscale
     KeyPairLocation = ~/.ssh/cyclecloud.pem
     
         [[[configuration]]]
+	cyclecloud.selinux.policy = permissive
         lustre.cluster_name = $LustreClusterName
         lustre.version = $LustreVersion
         lustre.mount_point = $LustreMountPoint
