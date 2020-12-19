@@ -17,7 +17,10 @@ UseLowPrio = false
     SubnetId = $SubnetId
     Region = $Region
     KeyPairLocation = ~/.ssh/cyclecloud.pem
-    
+
+        [[[configuration]]]
+        cyclecloud.selinux.policy = permissive
+	
     [[node mds]]
     MachineType = $MasterMachineType
     IsReturnProxy = $ReturnProxy
