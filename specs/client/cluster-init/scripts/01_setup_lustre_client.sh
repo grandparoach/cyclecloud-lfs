@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # set up cycle vars
+yum -y install epel-release
 yum -y install jq
 cluster_name=$(jetpack config cyclecloud.cluster.name)
 ccuser=$(jetpack config cyclecloud.config.username)
@@ -15,6 +16,11 @@ mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$lustre_name/nodes"|
 
 script_dir=$CYCLECLOUD_SPEC_PATH/files
 chmod +x $script_dir/*.sh
+
+# check for and disable /mnt/resource/swapfile
+if [ -f /mnt/resource/swapfile ]; then
+  swapoff /mnt/resource/swapfile && rm -rf /mnt/resource/swapfile
+fi
 
 # SETUP LUSTRE YUM REPO
 $script_dir/lfsrepo.sh $lustre_version
