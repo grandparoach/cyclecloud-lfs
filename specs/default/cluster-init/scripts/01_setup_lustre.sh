@@ -5,6 +5,7 @@ mdt_device=/dev/sdb
 ost_device_list='/dev/nvme*n1'
 
 # set up cycle vars
+yum -y install epel-release
 yum -y install jq
 cluster_name=$(jetpack config cyclecloud.cluster.name)
 ccuser=$(jetpack config cyclecloud.config.username)
@@ -26,6 +27,11 @@ log_analytics_key=$(jetpack config lustre.log_analytics.key)
 
 script_dir=$CYCLECLOUD_SPEC_PATH/files
 chmod +x $script_dir/*.sh
+
+# check for and disable /mnt/resource/swapfile
+if [ -f /mnt/resource/swapfile ]; then
+  swapoff /mnt/resource/swapfile && rm -rf /mnt/resource/swapfile
+fi
 
 n_ost_devices=$(echo $ost_device_list | wc -w)
 if [ "$n_ost_devices" -gt "1" ]; then
