@@ -1,11 +1,18 @@
 #!/bin/bash
 
+# set selinux to permissive
+setenforce 0
+
+yum -y install epel-release 
 # vars used in script
 mdt_device=/dev/sdb
-ost_device_list='/dev/nvme*n1'
+if [[ $(jetpack config azure.metadata.compute.vmSize) == Standard_L* ]]; then
+	ost_device_list='/dev/nvme*n1'
+else
+	ost_device_list=/dev/sdb
+fi
 
 # set up cycle vars
-yum -y install epel-release
 yum -y install jq
 cluster_name=$(jetpack config cyclecloud.cluster.name)
 ccuser=$(jetpack config cyclecloud.config.username)
@@ -27,11 +34,6 @@ log_analytics_key=$(jetpack config lustre.log_analytics.key)
 
 script_dir=$CYCLECLOUD_SPEC_PATH/files
 chmod +x $script_dir/*.sh
-
-# check for and disable /mnt/resource/swapfile
-if [ -f /mnt/resource/swapfile ]; then
-  swapoff /mnt/resource/swapfile && rm -rf /mnt/resource/swapfile
-fi
 
 n_ost_devices=$(echo $ost_device_list | wc -w)
 if [ "$n_ost_devices" -gt "1" ]; then
@@ -75,13 +77,15 @@ echo "ost_index=$ost_index"
 
 mds_ip=$(curl -s -k --user $ccuser:$ccpass "$ccurl/clusters/$cluster_name/nodes" | jq -r '.nodes[] | select(.Template=="mds") | .IpAddress')
 
-PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $ost_device
+if [ "$cctype" = "oss" ]; then
+	PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $ost_device
+fi
 
 if [ "${use_hsm,,}" = "true" ]; then
 
 	$script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container $lustre_version
 
-	if [ "$cctype" = "mds" ]; then
+	if [ "$cctype" = "hsm" ]; then
 
 		# IMPORT CONTAINER
 		$script_dir/lfsclient.sh $mds_ip /lustre

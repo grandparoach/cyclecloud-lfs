@@ -1,5 +1,6 @@
 #!/bin/bash
 
+setenforce 0
 # set up cycle vars
 yum -y install epel-release
 yum -y install jq
