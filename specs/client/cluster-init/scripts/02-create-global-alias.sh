@@ -2,7 +2,7 @@
 
 # Create HSM functions to archive, restore and check hsm_state for all users (ie. /etc/bashrc)
 mount_point=$(jetpack config lustre.mount_point)
-if grep -qF hsm_archive(); then
+if grep -qF "hsm_archive()" /etc/bashrc; then
 	echo /etc/bashrc already has HSM alias defined | systemd-cat -p info
 else
 	cat <<EOF >>/etc/bashrc
