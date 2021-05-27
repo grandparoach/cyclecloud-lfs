@@ -1,0 +1,74 @@
+Using HSM
+ 
+The AzureHPC examples and the Azure CycleCloud templates set up HSM on Lustre and import the storage container when the filesystem is created. Only the metadata is read, so files are downloaded on-demand as they are accessed. But, other than on-demand downloads, all the other commands for archival are not automatic.
+
+The copytool for Azure is available here. This copytool supports users, groups, and UNIX file permissions that are added as meta-data to the files stored in Azure Blob storage.
+
+
+HSM commands
+ 
+The HSM actions are available with the lfs command. All the commands that follow work with multiple files as arguments.
+ 
+
+
+Archive
+
+The lfs hsm_archive command copies the file to Azure Blob storage. Example usage:
+
+$ sudo lfs hsm_archive myfile
+ 
+
+
+Release
+
+The lfs hsm_release command releases an archived file from the Lustre filesystem. It no longer takes up space in Lustre, but it still appears in the filesystem. When opened, it's downloaded again. Example usage:
+
+$ sudo lfs hsm_release myfile
+
+ 
+
+Remove
+ 
+The lfs hsm_remove command deletes an archived file from the archive.
+ 
+$ sudo lfs hsm_remove myfile
+
+
+ 
+State
+
+The lfs hsm_state command shows the state of the file in the filesystem. This is output for a file that isn't archived:
+
+$ sudo lfs hsm_state myfile 
+myfile: (0x00000000)
+ 
+This is output for a file that is archived:
+
+$ sudo lfs hsm_state myfile 
+myfile: (0x0000000d) exists archived, archive_id:1
+ 
+This is output for a file that is archived and released (that is, in storage but not taking up space in the filesystem):
+
+$ sudo lfs hsm_state myfile 
+myfile: (0x0000000d) released exists archived, archive_id:1
+
+
+ 
+Action
+ 
+The lfs hsm_action command displays the current HSM request for a given file. This is most useful when checking the progress on files being archived or restored. When there is no ongoing or pending HSM request, it displays NOOP for the file.
+
+Rehydrating the whole filesystem from blob storage
+ 
+In certain cases, you may want to restore all the released (or imported) files into the filesystem. This is best used in cases where all the files are required and you don't want the application to wait for each file to be retrieved separately. This can be started with the following command:
+
+cd <lustre_root>
+find . -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_restore
+ 
+The progress of the files can be checked with sudo lfs hsm_action. To find out how many files are left to be restored, use the following command:
+
+cd <lustre_root>
+find . -type f -print0 \
+    | xargs -r0 -L 50 sudo lfs hsm_restore \
+    | grep -v NOOP \
+    | wc -l
