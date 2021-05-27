@@ -1,0 +1,21 @@
+Global alias have been created in /etc/bashrc as follows:
+
+hsm_archive
+  - alias hsm_archive='find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_archive'
+  - this command will "archive" all the files in your Lustre filesystem to Blob
+  - files will not be "released" from Lustre
+
+
+hsm_restore
+  - alias hsm_restore='find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_restore'
+  - when Lustre is started anew it will import all metadata from Blob but not
+    file data
+  - this command will "restore" all file data from Blob to Lustre
+
+
+hsm_state <grep argument>
+  - find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_state | grep "$1" | wc -l
+  - examples:
+    -- hsm_state -i archive --> counts # of files archived to Blob
+    -- hsm_state -v release --> counts # of files NOT released to Blob
+    -- hsm_state -v archive --> counts # of files NOT archived to Blob
