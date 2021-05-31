@@ -17,11 +17,7 @@ UseLowPrio = false
     SubnetId = $SubnetId
     Region = $Region
     KeyPairLocation = ~/.ssh/cyclecloud.pem
-    
-    [[node mds]]
-    MachineType = $MdsMachineType
-    IsReturnProxy = $ReturnProxy
-    
+
         [[[configuration]]]
         lustre.version = $LustreVersion
 
@@ -35,15 +31,17 @@ UseLowPrio = false
         lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
         lustre.log_analytics.key = $LogAnalyticsKey
 
-        [[[cluster-init lfs:default:1.0.3]]]
+	      [[[cluster-init lfs:default:1.0.3]]]
         Optional = True
+    
+    [[node mds]]
+    MachineType = $MdsMachineType
+    IsReturnProxy = $ReturnProxy
+    
+        [[[configuration]]]
 
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $UsePublicNetwork
-
-        [[[input-endpoint ganglia]]]
-        PrivatePort = 8652
-        PublicPort = 8652
 
     [[nodearray oss]]
     MachineType = $OssMachineType
@@ -51,20 +49,6 @@ UseLowPrio = false
     InitialCount = $LustreOSSCount
 
         [[[configuration]]]
-        lustre.version = $LustreVersion
-        
-        lustre.use_hsm = $LustreUseHsm
-        lustre.storage_account = $LustreBlobAccount
-        lustre.storage_key = $LustreBlobKey
-        lustre.storage_container = $LustreBlobContainer
-
-        lustre.use_log_analytics = $LustreUseLogAnalytics
-        lustre.log_analytics.name = $LogAnalyticsName
-        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
-        lustre.log_analytics.key = $LogAnalyticsKey
-
-        [[[cluster-init lfs:default:1.0.3]]]
-        Optional = True
 
     [[nodearray hsm]]
     InitialCount = ${ifThenElse(LustreUseHsm, 1, 0)}
@@ -72,20 +56,6 @@ UseLowPrio = false
     
         [[[configuration]]]
         autoscale.enabled = false
-        lustre.version = $LustreVersion
-
-        lustre.use_hsm = $LustreUseHsm
-        lustre.storage_account = $LustreBlobAccount
-        lustre.storage_key = $LustreBlobKey
-        lustre.storage_container = $LustreBlobContainer
-
-        lustre.use_log_analytics = $LustreUseLogAnalytics
-        lustre.log_analytics.name = $LogAnalyticsName
-        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
-        lustre.log_analytics.key = $LogAnalyticsKey
-
-        [[[cluster-init lfs:default:1.0.3]]]
-        Optional = True
 
 [parameters About]
 Order = 1
@@ -116,19 +86,20 @@ Order = 10
         Label = MDS VM Type
         Description = The VM type for the MDS/MGS nodes of Lustre.
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_L16s_v2
+        DefaultValue = Standard_D16ds_v4
+
 
         [[[parameter OssMachineType]]]
         Label = OSS VM Type
         Description = The VM type for OSS nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_L16s_v2
+        DefaultValue = Standard_D64ds_v4
 
         [[[parameter HsmMachineType]]]
         Label = HSM VM Type
         Description = The VM type for the HSM nodes of Lustre.
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_L16s_v2
+        DefaultValue = Standard_D16ds_v4
 
     [[parameters Networking]]
     Order = 40

@@ -81,17 +81,13 @@ if [ "$cctype" = "oss" ]; then
 	PSSH_NODENUM=$ost_index $script_dir/lfsoss.sh $mds_ip $ost_device
 fi
 
-if [ "${use_hsm,,}" = "true" ]; then
-
+if [ "$cctype" = "hsm" ]; then
+	
 	$script_dir/lfshsm.sh $mds_ip $storage_account "$storage_key" $storage_container $lustre_version
 
-	if [ "$cctype" = "hsm" ]; then
-
-		# IMPORT CONTAINER
-		$script_dir/lfsclient.sh $mds_ip /lustre
-		$script_dir/lfsimport.sh $storage_account "$storage_key" $storage_container /lustre $lustre_version
-
-	fi
+	# IMPORT CONTAINER
+	$script_dir/lfsclient.sh $mds_ip /lustre
+	$script_dir/lfsimport.sh $storage_account "$storage_key" $storage_container /lustre $lustre_version
 
 fi
 
