@@ -24,7 +24,7 @@ lustre_version=$(jetpack config lustre.version)
 
 use_hsm=$(jetpack config lustre.use_hsm)
 storage_account=$(jetpack config lustre.storage_account)
-storage_sas="$(jetpack config lustre.storage_sas)"
+storage_key="$(jetpack config lustre.storage_key)"
 storage_container=$(jetpack config lustre.storage_container)
 
 use_log_analytics=$(jetpack config lustre.use_log_analytics)
