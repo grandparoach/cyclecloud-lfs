@@ -18,7 +18,7 @@ This can result in data loss.  Here are the actions available in the CycleCloud 
 * Shutdown/Delete Node - delete VM and disks, data on disks will be destroyed.
 * Terminate Cluster - delete all VMs and disks, all data destroyed.
 
-It is possible to create a LFS cluster, populate the data aand when the workload
+It is possible to create a LFS cluster, populate the data and when the workload
 is finished, deallocate the VMs so that the cluster can be restarted.
 This is helpful in controlling costs, because charges for the VMs will be suspended while
 deallocated.  Keep in mind that disks will still accrue charges while the VMs are 
