@@ -1,17 +1,17 @@
 Global alias have been created in /etc/bashrc as follows:
 
 hsm_archive
-  - defines a function to run 'find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_archive'
+  - alias hsm_archive='find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_archive'
   - this command will "archive" all the files in your Lustre filesystem to Blob
   - files will not be "released" from Lustre
-  - runs the "metastore" command to copy /lustre metadata to a file located at /lustre/metastore
 
 
 hsm_restore
-  - defines a function to run 'find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_restore'
-  - when Lustre is started anew it will import all metadata from Blob but not file data
+  - alias hsm_restore='find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_restore'
+  - when Lustre is started anew it will import all metadata from Blob but not
+    file data
   - this command will "restore" all file data from Blob to Lustre
-  - runs the "metastore" command to restore /lustre metadata from a file located at /lustre/metastore
+
 
 hsm_state <grep argument>
   - find $(jetpack config lustre.mount_point) -type f -print0 | xargs -r0 -L 50 sudo lfs hsm_state | grep "$1" | wc -l

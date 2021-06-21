@@ -19,26 +19,33 @@ UseLowPrio = false
     KeyPairLocation = ~/.ssh/cyclecloud.pem
 
         [[[configuration]]]
-        lustre.version = $LustreVersion
 
-        lustre.use_hsm = $LustreUseHsm
-        lustre.storage_account = $LustreBlobAccount
-        lustre.storage_key = $LustreBlobKey
-        lustre.storage_container = $LustreBlobContainer
-
-        lustre.use_log_analytics = $LustreUseLogAnalytics
-        lustre.log_analytics.name = $LogAnalyticsName
-        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
-        lustre.log_analytics.key = $LogAnalyticsKey
-
-	      [[[cluster-init lfs:default:1.0.3]]]
-        Optional = True
     
     [[node mds]]
     MachineType = $MdsMachineType
     IsReturnProxy = $ReturnProxy
     
         [[[configuration]]]
+        lustre.type = durable
+        lustre.version = $LustreVersion
+
+        lustre.use_log_analytics = $LustreUseLogAnalytics
+        lustre.log_analytics.name = $LogAnalyticsName
+        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
+        lustre.log_analytics.key = $LogAnalyticsKey
+
+        [[[volume mdt1]]]
+        Size = 1024
+        StorageAccountType = Premium_LRS
+#        Mount = mdt
+        Persistent = true
+
+#        [[[configuration cyclecloud.mounts.mdt]]]
+#        mountpoint = /dev/mdt1
+#        fs_type = xfs
+
+        [[[cluster-init lfs:default:1.0.4]]]
+        Optional = True
 
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $UsePublicNetwork
@@ -49,13 +56,82 @@ UseLowPrio = false
     InitialCount = $LustreOSSCount
 
         [[[configuration]]]
+        lustre.type = durable
+        lustre.version = $LustreVersion
 
-    [[nodearray hsm]]
-    InitialCount = ${ifThenElse(LustreUseHsm, 1, 0)}
-    MachineType = $HsmMachineType
-    
-        [[[configuration]]]
-        autoscale.enabled = false
+        lustre.use_log_analytics = $LustreUseLogAnalytics
+        lustre.log_analytics.name = $LogAnalyticsName
+        lustre.log_analytics.workspace_id = $LogAnalyticsWorkspaceId
+        lustre.log_analytics.key = $LogAnalyticsKey
+        
+        [[[volume ost1]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true       
+
+        [[[volume ost2]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost3]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost4]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost5]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost6]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost7]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost8]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost9]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+        [[[volume ost10]]]
+        Size = ${FilesystemSize/10}
+        StorageAccountType = Premium_LRS
+#        Mount = ost
+        Persistent = true
+
+#        [[[configuration cyclecloud.mounts.ost]]]
+#        mountpoint = /dev/md0
+#        fs_type = xfs
+#        raid_level = 0
+
+        [[[cluster-init lfs:default:1.0.4]]]
+        Optional = True
+
 
 [parameters About]
 Order = 1
@@ -80,26 +156,19 @@ Order = 10
         Label = Region
         Description = Deployment Location
         ParameterType = Cloud.Region
-        DefaultValue = westus2
+        DefaultValue = southcentralus
 
         [[[parameter MdsMachineType]]]
         Label = MDS VM Type
         Description = The VM type for the MDS/MGS nodes of Lustre.
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_D16ds_v4
-
+        DefaultValue = Standard_D16s_v4
 
         [[[parameter OssMachineType]]]
         Label = OSS VM Type
         Description = The VM type for OSS nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_D64ds_v4
-
-        [[[parameter HsmMachineType]]]
-        Label = HSM VM Type
-        Description = The VM type for the HSM nodes of Lustre.
-        ParameterType = Cloud.MachineType
-        DefaultValue = Standard_D16ds_v4
+        DefaultValue = Standard_D64s_v4
 
     [[parameters Networking]]
     Order = 40
@@ -131,7 +200,7 @@ Order = 20
         ParameterType = Cloud.Image
         Config.OS = linux
         #DefaultValue = cycle.image.centos7
-        DefaultValue = OpenLogic:CentOS:7.6:latest
+        DefaultValue = OpenLogic:CentOS:7.8:latest
         Config.Filter := Package === "cycle.image.centos7"
 
     [[parameters Advanced Networking]]
@@ -185,33 +254,14 @@ Order = 30
         Config.IntegerOnly = true
         Required = True
 
-    [[parameters HSM Settings]]
-    Order = 20
-    Description = "Lustre can use BLOB storage through HSM to import or archive data."
-
-        [[[parameter LustreUseHsm]]]
-        Label = Enable HSM
-        DefaultValue = false
-        Widget.Plugin = pico.form.BooleanCheckBox
-        Widget.Label = (requires storage details below)
-
-        [[[parameter LustreBlobAccount]]]
-        Label = Storage Account
-        Description = The blob account to which Lustre will sync.
-        DefaultValue = <blob account name> 
-        Conditions.Disabled := LustreUseHsm is false
-
-        [[[parameter LustreBlobKey]]]
-        Label = Storage Key
-        Description = The blob account key.
-        DefaultValue = <blob account key>
-        Conditions.Disabled := LustreUseHsm is false
-
-	[[[parameter LustreBlobContainer]]]
-        Label = Storage Container
-        Description = The blob container.
-        DefaultValue = <blob container>
-        Conditions.Disabled := LustreUseHsm is false
+        [[[parameter FilesystemSize]]]
+        Label = OST size
+        Description = Size of the OST (1 OST per OSS)
+        DefaultValue = 1024
+        Config.Plugin = pico.form.NumberTextBox
+        Config.MinValue = 40
+        Config.IntegerOnly = true
+        Required = True
 
     [[parameters Log Analytics Settings]]
     Order = 30
@@ -235,7 +285,7 @@ Order = 30
         DefaultValue = <workspace id>
         Conditions.Disabled := LustreUseLogAnalytics is false
 
-	[[[parameter LogAnalyticsKey]]]
+	    [[[parameter LogAnalyticsKey]]]
         Label = Log Analytics Key
         Description = The log analytics key.
         DefaultValue = <key>

@@ -6,6 +6,7 @@
 [cluster PBSPro-lfs]
 FormLayout = selectionpanel
 Category = My Clusters
+IconUrl = https://aws1.discourse-cdn.com/standard14/uploads/pbspro/original/1X/e85b80b9f7ef9f86a66d63baaaa417b84e49c5cd.png
 
 Autoscale = $Autoscale
 
@@ -18,14 +19,13 @@ Autoscale = $Autoscale
     KeyPairLocation = ~/.ssh/cyclecloud.pem
     
         [[[configuration]]]
-	cyclecloud.selinux.policy = permissive
         lustre.cluster_name = $LustreClusterName
         lustre.version = $LustreVersion
         lustre.mount_point = $LustreMountPoint
 
 
         [[[cluster-init cyclecloud/pbspro:default]]]
-        [[[cluster-init lfs:client]]]
+        [[[cluster-init lfs:client:1.0.3]]]
         Optional = true
 
     [[node master]]
@@ -34,19 +34,11 @@ Autoscale = $Autoscale
     AdditionalClusterInitSpecs = $MasterClusterInitSpecs
     
         [[[configuration]]]
-        lustre.cluster_name = $LustreClusterName
-        lustre.version = $LustreVersion
-        lustre.mount_point = $LustreMountPoint
 
         [[[cluster-init cyclecloud/pbspro:master]]]
-        [[[cluster-init lfs:client]]]
 
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $UsePublicNetwork
-
-        [[[input-endpoint ganglia]]]
-        PrivatePort = 8652
-        PublicPort = 8652
 
 
     [[nodearray execute]]
@@ -57,12 +49,8 @@ Autoscale = $Autoscale
     AdditionalClusterInitSpecs = $ExecuteClusterInitSpecs
 
         [[[configuration]]]
-        lustre.cluster_name = $LustreClusterName
-        lustre.version = $LustreVersion
-        lustre.mount_point = $LustreMountPoint
 
         [[[cluster-init cyclecloud/pbspro:execute]]]
-        [[[cluster-init lfs:client]]]
 
         [[[network-interface eth0]]]
         AssociatePublicIpAddress = $ExecuteNodesPublic
@@ -78,7 +66,7 @@ Order = 1
         Config.Plugin = pico.widget.HtmlTemplateWidget
         Config.Template := "<table><tr><td><p>PBSPro is a highly configurable open source workload manager. See the <a href=\"http://www.pbspro.org/\" target=\"_blank\">PBSPro project site</a> for an overview.</p></td></tr></table>"
 
-[parameters Required Settings]
+[parameters Required Settings]  
 Order = 10
 
     [[parameters Virtual Machines ]]

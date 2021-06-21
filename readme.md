@@ -2,9 +2,36 @@
 
 Lustre is a High Performance Parallel Filesystem typically used for High Performance Computing.  This repository contains an Azure CycleCloud project and templates to create a lustre file system on Azure.
 
-This Lustre filesystem project is designed for scratch data and uses virtual machines that have local/ephemeral disks.  The [Lsv2](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes-storage#lsv2-series) virtual machines have local NVME disks, while other VM types use the local SSD.  All the NVME disks in the virtual machine will be combined in a RAID 0 and used as the OST.  Please consider the [network throughput](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-storage#lsv2-series) when choosing the VM type as the bottleneck for this setup is the network.  For this reason it is not advisable to go any larger than the L32s_v2 for the MDS/OSS.  The D64ds_v4 series VM is recommended if not using the L32s_v2 as it has a large SSD (2.4TB) and high network throughput (30Mbps).
+This Lustre filesystem project is designed for either ephemeral scratch data and uses [Dds_v4](https://docs.microsoft.com/en-us/azure/virtual-machines/ddv4-ddsv4-series#ddsv4-series) virtual machines that have local SSD disks.  The SSD disk in the virtual machine will be used as the OST.  Please consider the [network throughput](https://docs.microsoft.com/en-us/azure/virtual-machines/ddv4-ddsv4-series#ddsv4-series) when choosing the VM size as the bottleneck for this setup is the network.  It is recommended to use the D64ds_v4 as the OSS to use the full machine.
 
-The project has an option to use [HSM](https://github.com/edwardsp/lemur) where data can be imported and archived to [Azure BLOB storage](https://azure.microsoft.com/en-gb/services/storage/blobs/).  All nodes run the HSM daemon when enabled.  A separate HSM VM will be created when HSM is enabled in order to import the filesystem from the configured Blob storage container.
+Version 1.4 added in an option to create a durable scratch filesystem using 10 Premium SSDs in RAID 0.  The total size of the OST is defined in the CycleCloud cluster settings and each disk is 1/10th of the total (ie. 10GB OST size will use 10 1GB SSD).
+
+## Cluster Life-Cycle for Premium Disk
+
+It is possible to delete data and disks managed by CycleCloud in the CycleCloud UI.
+This can result in data loss.  Here are the actions available in the CycleCloud management.
+
+* Create Cluster - creates storage VMs and disks
+* Add Node - add additional node will increase size & resources of cluster
+* Shutdown/Deallocate Node - will suspend node but preserve disks.
+* Start Deallocated Node - restore data and resources of deallocated node.
+* Shutdown/Delete Node - delete VM and disks, data on disks will be destroyed.
+* Terminate Cluster - delete all VMs and disks, all data destroyed.
+
+It is possible to create a LFS cluster, populate the data aand when the workload
+is finished, deallocate the VMs so that the cluster can be restarted.
+This is helpful in controlling costs, because charges for the VMs will be suspended while
+deallocated.  Keep in mind that disks will still accrue charges while the VMs are 
+deallocated.
+
+![CC VM Deallocate](/images/deallocate.png "Preserve data by deallocating VMs")
+
+## Hierarchical Storage Manager (HSM)
+
+The project has an option to use [HSM](https://github.com/edwardsp/lemur) where data can be imported and archived to [Azure BLOB storage](https://azure.microsoft.com/en-gb/services/storage/blobs/).  All nodes run the HSM daemon when enabled.
+
+
+## Monitoring
 
 Monitoring can be enabled where the following metrics will be written to [Log Analytics](https://docs.microsoft.com/en-us/azure/azure-monitor/log-query/get-started-portal#meet-log-analytics):
 
@@ -12,6 +39,9 @@ Monitoring can be enabled where the following metrics will be written to [Log An
 * Kilobytes Free
 * Network Bytes Sent
 * Network Bytes Received
+
+
+## Lustre Versions
 
 The Lustre versions that are currently supported are `2.10` and `2.12`.  Make sure that the filesystem and clients all use the same version.  The [Whamcloud](https://downloads.whamcloud.com/public/lustre/) repository is used for RPMs and so you must use version `2.10` for CentOS 7.6 and `2.12` for CentOS 7.7.
 
@@ -22,7 +52,7 @@ The Lustre versions that are currently supported are `2.10` and `2.12`.  Make su
 Below are instructions to check out the project from github and add the lfs project and template:
 
 ```
-git clone https://github.com/edwardsp/cyclecloud-lfs.git
+git clone https://github.com/themorey/cyclecloud-lfs
 cd cyclecloud-lfs
 cyclecloud project upload <container>
 cyclecloud import_template -f templates/lfs.txt
