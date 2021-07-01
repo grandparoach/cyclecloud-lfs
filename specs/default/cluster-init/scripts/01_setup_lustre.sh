@@ -10,7 +10,7 @@ if [[ $(jetpack config azure.metadata.compute.vmSize) == Standard_L* ]]; then
 	ost_device_list='/dev/nvme*n1'
 	mdt_device='/dev/sdb'
 elif [[ $(jetpack config lustre.type) == durable ]]; then
-	ost_device_list='/dev/sd[!a]*1'
+	ost_device_list='/dev/sd[!a]*'
 	mdt_device='/dev/sdb'
 else
 	ost_device_list='/dev/sdb'
