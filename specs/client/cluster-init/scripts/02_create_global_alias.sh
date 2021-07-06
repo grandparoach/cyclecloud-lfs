@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "${jetpack config lustre.type}" = "durable" ]; then
+    exit 0
+fi
+
 # Create HSM functions to archive, restore and check hsm_state for all users (ie. /etc/bashrc)
 mount_point=$(jetpack config lustre.mount_point)
 if grep -qF "hsm_archive()" /etc/bashrc; then
