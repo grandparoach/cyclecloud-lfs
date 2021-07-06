@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # set up cycle vars
-yum -y install jq
+yum -y install epel-release 
+yum -u install jq
 cluster_name=$(jetpack config cyclecloud.cluster.name)
 ccuser=$(jetpack config cyclecloud.config.username)
 ccpass=$(jetpack config cyclecloud.config.password)
