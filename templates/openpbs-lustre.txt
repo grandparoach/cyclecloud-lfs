@@ -38,7 +38,7 @@ Autoscale = $Autoscale
         lustre.version = $LustreVersion
         lustre.mount_point = $LustreMountPoint
 
-        [[[cluster-init lfs:client]]]
+        [[[cluster-init lfs:client:1.0.4]]]
         [[[cluster-init cyclecloud/pbspro:default]]]
         Optional = false
 
