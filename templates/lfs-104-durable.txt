@@ -200,7 +200,8 @@ Order = 20
         ParameterType = Cloud.Image
         Config.OS = linux
         #DefaultValue = cycle.image.centos7
-        DefaultValue = OpenLogic:CentOS:7.8:latest
+        #DefaultValue = OpenLogic:CentOS:7.8:latest
+	DefaultValue = azhpc:azurehpc-lustre:azurehpc-lustre-2_12:latest
         Config.Filter := Package === "cycle.image.centos7"
 
     [[parameters Advanced Networking]]
