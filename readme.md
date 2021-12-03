@@ -70,6 +70,7 @@ An extended Slurm template is included in this repository with the option to cho
 
 ```
 cyclecloud import_template -f templates/slurm-lfs.txt
+```
 
 Now, you should be able to create a new "lfs" cluster in the Azure CycleCloud User Interface.  Once this has been created you can create PBS cluster and, in the configuration, select the new file system to be used.
 
