@@ -36,6 +36,13 @@ cyclecloud import_template -f templates/pbspro.txt
 
 > Note: The PBSpro template a modified version of the official one [here](https://github.com/Azure/cyclecloud-pbspro/blob/master/templates/pbspro.txt)
 
+An extended Slurm template is included in this repository with the option to choose a Lustre filesystem to set up and mount on the nodes:
+
+```
+cyclecloud import_template -f templates/slurm-lfs.txt
+```
+
+
 Now, you should be able to create a new "lfs" cluster in the Azure CycleCloud User Interface.  Once this has been created you can create PBS cluster and, in the configuration, select the new file system to be used.
 
 # Extending a template to use a Lustre filesystem
