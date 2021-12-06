@@ -131,7 +131,8 @@ Order = 20
         ParameterType = Cloud.Image
         Config.OS = linux
         #DefaultValue = cycle.image.centos7
-        DefaultValue = OpenLogic:CentOS:7.6:latest
+        #DefaultValue = OpenLogic:CentOS:7.6:latest
+	DefaultValue = placeholder
         Config.Filter := Package === "cycle.image.centos7"
 
     [[parameters Advanced Networking]]
@@ -166,7 +167,7 @@ Order = 30
         [[[parameter LustreVersion]]]
         Label = Lustre Version
         Description = The Lustre version to use
-        DefaultValue = "2.10"
+        DefaultValue = "2.12"
         Config.FreeForm = false
         Config.Plugin = pico.control.AutoCompleteDropdown
             [[[[list Config.Entries]]]]
