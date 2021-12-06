@@ -22,10 +22,10 @@ The Lustre versions that are currently supported are `2.10` and `2.12`.  Make su
 Below are instructions to check out the project from github and add the lfs project and template:
 
 ```
-git clone https://github.com/edwardsp/cyclecloud-lfs.git
+git clone https://github.com/grandparoach/cyclecloud-lfs.git
 cd cyclecloud-lfs
 cyclecloud project upload <container>
-cyclecloud import_template -f templates/lfs.txt
+cyclecloud import_template -f templates/lfs-103.txt
 ```
 
 An extended PBSpro template is included in this repository with the option for choose a Lustre filesystem to set up and mount on the nodes:
