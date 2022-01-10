@@ -214,7 +214,7 @@ Order = 10
         Label = HPC VM Type
         Description = The VM type for HPC execute nodes
         ParameterType = Cloud.MachineType
-        DefaultValue = Standard_F2s_v2
+        DefaultValue = Standard_HB120rs_v2
 
         [[[parameter HTCMachineType]]]
         Label = HTC VM Type
@@ -236,7 +236,7 @@ Order = 10
         [[[parameter MaxHPCExecuteCoreCount]]]
         Label = Max HPC Cores
         Description = The total number of HPC execute cores to start
-        DefaultValue = 100
+        DefaultValue = 480
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -244,7 +244,7 @@ Order = 10
         [[[parameter MaxHTCExecuteCoreCount]]]
         Label = Max HTC Cores
         Description = The total number of HTC execute cores to start
-        DefaultValue = 100
+        DefaultValue = 20
         Config.Plugin = pico.form.NumberTextBox
         Config.MinValue = 1
         Config.IntegerOnly = true
@@ -467,21 +467,21 @@ Order = 20
         ParameterType = Cloud.Image
         Config.OS = linux
         DefaultValue = cycle.image.centos7
-        Config.Filter := Package in {"cycle.image.centos7", "cycle.image.centos8", "cycle.image.ubuntu18"}
+        Config.Filter := Package in {"cycle.image.centos7"}
 
         [[[parameter HPCImageName]]]
         Label = HPC OS
         ParameterType = Cloud.Image
         Config.OS = linux
         DefaultValue = cycle.image.centos7
-        Config.Filter := Package in {"cycle.image.centos7", "cycle.image.centos8", "cycle.image.ubuntu18"}
+        Config.Filter := Package in {"cycle.image.centos7"}
 
         [[[parameter HTCImageName]]]
         Label = HTC OS
         ParameterType = Cloud.Image
         Config.OS = linux
         DefaultValue = cycle.image.centos7
-        Config.Filter := Package in {"cycle.image.centos7", "cycle.image.centos8", "cycle.image.ubuntu18"}
+        Config.Filter := Package in {"cycle.image.centos7"}
 
         [[[parameter SchedulerClusterInitSpecs]]]
         Label = Scheduler Cluster-Init
