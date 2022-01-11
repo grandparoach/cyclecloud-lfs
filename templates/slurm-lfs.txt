@@ -4,7 +4,7 @@
 
 [cluster slurm-lfs]
 FormLayout = selectionpanel
-Category = Schedulers
+Category = My Clusters
 
 Autoscale = $Autoscale
 
