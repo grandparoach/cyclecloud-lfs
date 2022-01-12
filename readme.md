@@ -28,13 +28,12 @@ cyclecloud project upload <container>
 cyclecloud import_template -f templates/lfs-103.txt
 ```
 
-An extended PBSpro template is included in this repository with the option for choose a Lustre filesystem to set up and mount on the nodes:
+An extended OpenPBS template is included in this repository with the option for choose a Lustre filesystem to set up and mount on the nodes:
 
 ```
-cyclecloud import_template -f templates/pbspro.txt
+cyclecloud import_template -f templates/openpbs-lustre.txt
 ```
 
-> Note: The PBSpro template a modified version of the official one [here](https://github.com/Azure/cyclecloud-pbspro/blob/master/templates/pbspro.txt)
 
 An extended Slurm template is included in this repository with the option to choose a Lustre filesystem to set up and mount on the nodes:
 
