@@ -3,9 +3,9 @@
 ## Cluster Configuration File ##
 ################################
 
-[cluster OpenPBS]
+[cluster OpenPBS-lfs]
 FormLayout = selectionpanel
-Category = Schedulers
+Category = My Clusters
 
 Autoscale = $Autoscale
 
